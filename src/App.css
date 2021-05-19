@@ -24,7 +24,7 @@
   display: flex;
   
 }
-.controls div {
+.controls .open-menu {
   cursor: pointer;
   width: 35px;
   height: 35px;
@@ -59,7 +59,7 @@
   border-color: #858585 transparent transparent transparent;
 }
 .container-default-colors,
-.sliders {
+.controls div .sliders {
   width: 200px;
   height: auto;
   position: absolute;
@@ -87,9 +87,10 @@
   width: 16px;
   height: 16px;
 }
-.sliders {
+.controls div .sliders {
   padding: 20px;
   width: 250px;
+  display: block;
 }
 input[type="range"] {
   -webkit-appearance: none;
@@ -97,12 +98,12 @@ input[type="range"] {
   border-radius: 50px;
   width: 180px;
 }
-.red, .green, .blue {
+.controls div.red, .controls div.green, .controls div.blue {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-.red label, .green label, .blue label {
+.controls div.red label, .controls div.green label, .controls div.blue label {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   color: #858585;
   padding: 10px 0;

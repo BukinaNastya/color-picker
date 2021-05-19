@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 const App = () => {
-	const [value, setColor] = useState('#db3e00');
+	const [value, setColor] = useState('#ffffff');
 	const colors = [
 		{ name: 'red', color: '#db3e00' },
 		{ name: 'yellow', color: '#fccb00' },
@@ -11,7 +11,7 @@ const App = () => {
 	] 
 	const handleChangeColor = newValue => {
 		setColor(newValue);
-  };
+	};
 	return (
 		<div className="wrapper">
 			<ColorPicker value={value} colors={colors} onChange={handleChangeColor}  />
@@ -24,15 +24,14 @@ const ColorPicker = ({value, colors, onChange}) => {
 		<div className="color-picker">
 			<span className="current-color-name">{value}</span>
 			<div className="controls">
-				<div>
-					<span className="default-color" style={{backgroundColor: `${value}`}} onClick={() => setShowHideBlock(showHideBlock == 'show-sliders' ? 'hide' : 'show-sliders')} ></span>
+				<div className="open-menu">
+					<Sliders value={value} handleChangeColor={onChange} setShowHideBlock={setShowHideBlock} showHideBlock={showHideBlock} />
 				</div>
-				<div>
+				<div className="open-menu">
 					<span className="arrow" onClick={() => setShowHideBlock(showHideBlock == 'show-colors' ? 'hide' : 'show-colors')} ></span>
 				</div>
 			</div>
 			{showHideBlock == 'show-colors' ? <DefaultColors value={value} colorsArr={colors} handleChangeColor={onChange} setShowHideBlock={setShowHideBlock} showHideBlock={showHideBlock} /> : null}
-			{showHideBlock == 'show-sliders' ? <Sliders value={value} handleChangeColor={onChange} setShowHideBlock={setShowHideBlock} showHideBlock={showHideBlock} /> : null}
 		</div>
 	)
 }
@@ -66,54 +65,57 @@ const rgbToHex = (r, g, b) => {
 }
 
 const Sliders = ({value, handleChangeColor, setShowHideBlock, showHideBlock}) => {
-	let rgb = hexToRGB(value);
 	const [newColorValue, setNewValue] = useState(value);
+	console.log(newColorValue);
 	const handleNewValue = newColor => {
-		// console.log(newColor);
 		setNewValue(newColor);
-  };
+	};
+	let rgb = hexToRGB(newColorValue);
 	return (
-			<div className="sliders">
-				<div className="red">
-					<label>
-						R
-					</label>
-					<input id="red" type="range" 
-						min="0" 
-						max="255" 
-						steps="1" 
-						value={rgb.red} 
-						onChange={e => handleNewValue(rgbToHex(e.target.value, rgb.green, rgb.blue))}
-					/>
-				</div>
-				<div className="green">
-					<label>
-						G
-					</label>
-					<input id="green" type="range" 
-						min="0" 
-						max="255" 
-						steps="1" 
-						value={rgb.green} 
-						onChange={e => handleNewValue(rgbToHex(rgb.red, e.target.value, rgb.blue))} 
-					/>
-				</div>
-				
-				<div className="blue">
-					<label>
-						B
-					</label>
-					<input id="blue" type="range"  
-						min="0" 
-						max="255" 
-						steps="1" 
-						value={rgb.blue} 
-						onChange={e => handleNewValue(rgbToHex(rgb.red, rgb.green, Number(e.target.value)))} 
-					/>
-				</div>
-				<button onClick={() => { handleChangeColor(newColorValue); setShowHideBlock(showHideBlock == 'show-sliders' ? 'hide' : 'show-sliders');}}>OK</button>
-				<button onClick={() => {handleChangeColor(value); setShowHideBlock(showHideBlock == 'show-sliders' ? 'hide' : 'show-sliders')}}>Cancel</button>
-		</div>
+		<>
+			<span className="default-color" style={{backgroundColor: `${newColorValue}`}} onClick={() => setShowHideBlock(showHideBlock == 'show-sliders' ? 'hide' : 'show-sliders')} ></span>
+			{showHideBlock == 'show-sliders' ? 
+				<div className="sliders">
+					<div className="red">
+						<label>
+							R
+						</label>
+						<input id="red" type="range" 
+							min="0" 
+							max="255" 
+							steps="1" 
+							value={rgb.red} 
+							onChange={e => handleNewValue(rgbToHex(e.target.value, rgb.green, rgb.blue))}
+						/>
+					</div>
+					<div className="green">
+						<label>
+							G
+						</label>
+						<input id="green" type="range" 
+							min="0" 
+							max="255" 
+							steps="1" 
+							value={rgb.green} 
+							onChange={e => handleNewValue(rgbToHex(rgb.red, e.target.value, rgb.blue))} 
+						/>
+					</div>
+					<div className="blue">
+						<label>
+							B
+						</label>
+						<input id="blue" type="range"  
+							min="0" 
+							max="255" 
+							steps="1" 
+							value={rgb.blue} 
+							onChange={e => handleNewValue(rgbToHex(rgb.red, rgb.green, Number(e.target.value)))} 
+						/>
+					</div>
+					<button onClick={() => {handleChangeColor(newColorValue); setShowHideBlock(showHideBlock == 'show-sliders' ? 'hide' : 'show-sliders'); }}>OK</button>
+					<button onClick={() => {handleNewValue(value); setShowHideBlock(showHideBlock == 'show-sliders' ? 'hide' : 'show-sliders')}}>Cancel</button>
+				</div> : null }
+			</>
 	)
 }
 
