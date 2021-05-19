@@ -65,8 +65,9 @@ const rgbToHex = (r, g, b) => {
 }
 
 const Sliders = ({value, handleChangeColor, setShowHideBlock, showHideBlock}) => {
+	console.log(value, "value");
 	const [newColorValue, setNewValue] = useState(value);
-	console.log(newColorValue);
+	console.log("newColorValue", newColorValue);
 	const handleNewValue = newColor => {
 		setNewValue(newColor);
 	};
