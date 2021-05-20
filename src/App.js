@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 
 const App = () => {
@@ -12,6 +12,9 @@ const App = () => {
 	const handleChangeColor = newValue => {
 		setColor(newValue);
 	};
+	useEffect(() => {
+		handleChangeColor(value);
+	})
 	return (
 		<div className="wrapper">
 			<ColorPicker value={value} colors={colors} onChange={handleChangeColor}  />
@@ -19,28 +22,48 @@ const App = () => {
 	);
 }
 const ColorPicker = ({value, colors, onChange}) => {
-  const [showHideBlock, setShowHideBlock] = useState('hide');
+	const [showHideBlock, setShowHideBlock] = useState('hide');
+	const container = useRef();
+	useEffect(() => {
+		if (showHideBlock === "show-colors" || showHideBlock === "show-sliders" ) {
+			document.addEventListener('mousedown', handleClickOutside);
+		} else {
+			document.removeEventListener('mousedown', handleClickOutside);
+		}
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+		
+	}, [showHideBlock]);
+	const handleClickOutside = (e) => {
+		if (container.current && container.current.contains(e.target)) {
+			return;
+		}
+		setShowHideBlock('hide');
+	};
 	return(
-		<div className="color-picker">
+		<div className="color-picker" ref={container}>
 			<span className="current-color-name">{value}</span>
 			<div className="controls">
 				<div className="open-menu">
 					<Sliders value={value} handleChangeColor={onChange} setShowHideBlock={setShowHideBlock} showHideBlock={showHideBlock} />
 				</div>
 				<div className="open-menu">
-					<span className="arrow" onClick={() => setShowHideBlock(showHideBlock == 'show-colors' ? 'hide' : 'show-colors')} ></span>
+					<span className="arrow" onClick={() => setShowHideBlock(showHideBlock === 'show-colors' ? 'hide' : 'show-colors')} ></span>
 				</div>
 			</div>
-			{showHideBlock == 'show-colors' ? 
+			{showHideBlock === 'show-colors' ? 
 				<DefaultColors value={value} colorsArr={colors} handleChangeColor={onChange} setShowHideBlock={setShowHideBlock} showHideBlock={showHideBlock} /> : null}
 		</div>
 	)
 }
 
+
+
 const DefaultColors = ({value, colorsArr, handleChangeColor, setShowHideBlock, showHideBlock}) => {
 	const colors = colorsArr;
 	const colorItems = colors.map((item) => 
-		<div className={item.color == value ? 'active' : ''} key={item.color} onClick={() => {handleChangeColor(item.color);setShowHideBlock(showHideBlock == 'show-colors' ? 'hide' : 'show-colors')}} >
+		<div className={item.color === value ? 'active' : ''} key={item.color} onClick={() => {handleChangeColor(item.color);setShowHideBlock(showHideBlock === 'show-colors' ? 'hide' : 'show-colors')}} >
 			<span className="name">{item.name}</span>
 			<span className="color" style={{backgroundColor: `${item.color}`}}></span>
 		</div>
@@ -76,8 +99,8 @@ const Sliders = ({value, handleChangeColor, setShowHideBlock, showHideBlock}) =>
 	let rgb = hexToRGB(newColorValue);
 	return (
 		<>
-			<span className="default-color" style={{backgroundColor: `${newColorValue}`}} onClick={() => setShowHideBlock(showHideBlock == 'show-sliders' ? 'hide' : 'show-sliders')} ></span>
-			{showHideBlock == 'show-sliders' ? 
+			<span className="default-color" style={{backgroundColor: `${newColorValue}`}} onClick={() => setShowHideBlock(showHideBlock === 'show-sliders' ? 'hide' : 'show-sliders')} ></span>
+			{showHideBlock === 'show-sliders' ? 
 				<div className="sliders">
 					<div className="red">
 						<label>
@@ -115,8 +138,8 @@ const Sliders = ({value, handleChangeColor, setShowHideBlock, showHideBlock}) =>
 							onChange={e => handleNewValue(rgbToHex(rgb.red, rgb.green, Number(e.target.value)))} 
 						/>
 					</div>
-					<button onClick={() => {handleChangeColor(newColorValue); setShowHideBlock(showHideBlock == 'show-sliders' ? 'hide' : 'show-sliders'); }}>OK</button>
-					<button onClick={() => {handleNewValue(value); setShowHideBlock(showHideBlock == 'show-sliders' ? 'hide' : 'show-sliders')}}>Cancel</button>
+					<button onClick={() => {handleChangeColor(newColorValue); setShowHideBlock(showHideBlock === 'show-sliders' ? 'hide' : 'show-sliders'); }}>OK</button>
+					<button onClick={() => {handleNewValue(value); setShowHideBlock(showHideBlock === 'show-sliders' ? 'hide' : 'show-sliders')}}>Cancel</button>
 				</div> : null }
 			</>
 	)
