@@ -95,7 +95,7 @@ const Sliders = ({value, handleChangeColor, setShowHideBlock, showHideBlock}) =>
 	};
 	useEffect(() => {
 		handleNewValue(value)
-	}, [value]);
+	}, [value, showHideBlock]);
 	let rgb = hexToRGB(newColorValue);
 	return (
 		<>
