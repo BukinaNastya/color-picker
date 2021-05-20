@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import './App.css';
 
 const App = () => {
@@ -31,7 +31,8 @@ const ColorPicker = ({value, colors, onChange}) => {
 					<span className="arrow" onClick={() => setShowHideBlock(showHideBlock == 'show-colors' ? 'hide' : 'show-colors')} ></span>
 				</div>
 			</div>
-			{showHideBlock == 'show-colors' ? <DefaultColors value={value} colorsArr={colors} handleChangeColor={onChange} setShowHideBlock={setShowHideBlock} showHideBlock={showHideBlock} /> : null}
+			{showHideBlock == 'show-colors' ? 
+				<DefaultColors value={value} colorsArr={colors} handleChangeColor={onChange} setShowHideBlock={setShowHideBlock} showHideBlock={showHideBlock} /> : null}
 		</div>
 	)
 }
@@ -65,12 +66,13 @@ const rgbToHex = (r, g, b) => {
 }
 
 const Sliders = ({value, handleChangeColor, setShowHideBlock, showHideBlock}) => {
-	console.log(value, "value");
 	const [newColorValue, setNewValue] = useState(value);
-	console.log("newColorValue", newColorValue);
 	const handleNewValue = newColor => {
 		setNewValue(newColor);
 	};
+	useEffect(() => {
+		handleNewValue(value)
+	}, [value]);
 	let rgb = hexToRGB(newColorValue);
 	return (
 		<>
